@@ -236,26 +236,26 @@ commands:
             - setupcuda
       - fixgit
       - restore_cache:
-          key: deps-20200921-<< parameters.cachename >>-{{ checksum "requirements.txt" }}
+          key: deps-20201031-<< parameters.cachename >>-{{ checksum "requirements.txt" }}
       - setup
       - installdeps
       - << parameters.more_installs >>
       - save_cache:
-          key: deps-20200921-<< parameters.cachename >>-{{ checksum "requirements.txt" }}
+          key: deps-20201031-<< parameters.cachename >>-{{ checksum "requirements.txt" }}
           paths:
             - "~/venv/bin"
             - "~/venv/lib"
       - findtests:
           marker: << parameters.marker >>
       - restore_cache:
-          key: data-20200904-<< parameters.cachename >>-{{ checksum "teststorun.txt" }}
+          key: data-20201031-<< parameters.cachename >>-{{ checksum "teststorun.txt" }}
       - run:
           name: Run tests
           no_output_timeout: 60m
           command: |
             coverage run -m pytest -m << parameters.marker >> << parameters.pytest_flags >> --junitxml=test-results/junit.xml
       - save_cache:
-          key: data-20200904-<< parameters.cachename >>-{{ checksum "teststorun.txt" }}
+          key: data-20201031-<< parameters.cachename >>-{{ checksum "teststorun.txt" }}
           paths:
             - "~/ParlAI/data"
       - codecov
@@ -272,12 +272,12 @@ commands:
       - checkout
       - fixgit
       - restore_cache:
-          key: deps-20200921-bw-{{ checksum "requirements.txt" }}
+          key: deps-20201031-bw-{{ checksum "requirements.txt" }}
       - setup
       - installdeps
       - installtorchgpu16
       - save_cache:
-          key: deps-20200921-bw-{{ checksum "requirements.txt" }}
+          key: deps-20201031-bw-{{ checksum "requirements.txt" }}
           paths:
             - "~/venv/bin"
             - "~/venv/lib"
@@ -345,7 +345,7 @@ jobs:
   unittests_36:
     executor: standard_cpu36
     working_directory: ~/ParlAI
-    parallelism: 8
+    parallelism: 2
     steps:
       - runtests:
           more_installs:
@@ -354,9 +354,9 @@ jobs:
           marker: unit
 
   unittests_37:
-    executor: standard_cpu38
+    executor: standard_cpu37
     working_directory: ~/ParlAI
-    parallelism: 2
+    parallelism: 8
     steps:
       - runtests:
           more_installs:
@@ -438,7 +438,7 @@ jobs:
   teacher_tests:
     executor: standard_cpu37
     working_directory: ~/ParlAI
-    parallelism: 8
+    parallelism: 16
     steps:
       - runtests:
           cachename: teacher
